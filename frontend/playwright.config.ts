@@ -1,0 +1,3 @@
+import {defineConfig} from '@playwright/test';
+const python=process.env.PYTHON_BIN||'../backend/.venv/bin/python';
+export default defineConfig({testDir:'./e2e',workers:1,timeout:30000,use:{baseURL:'http://127.0.0.1:8000',headless:true,reducedMotion:'reduce',viewport:{width:1440,height:1000},screenshot:'only-on-failure'},webServer:{command:`${python} -m uvicorn app.main:app --app-dir ../backend --host 127.0.0.1 --port 8000 --no-access-log`,url:'http://127.0.0.1:8000/api/v1/health',reuseExistingServer:false,timeout:20000,env:{DATABASE_URL:'sqlite:///./e2e-test.db',SERPAPI_API_KEY:'',LLM_API_KEY:''}}});

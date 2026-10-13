@@ -1,0 +1,947 @@
+MASTER DEVELOPMENT PROMPT
+
+ScamShield AI — Agentic AI-Powered Digital Fraud Protection, Internship Verification & Job Intelligence Platform
+
+YOUR ROLE
+
+Act as a team of senior full-stack engineers, AI/ML architects, cybersecurity engineers, product designers, database engineers, QA specialists, and DevOps engineers.
+
+Your task is to design and implement a production-minded, hackathon-ready, fully functional AI-powered web application named ScamShield AI.
+
+Do not create only a UI mockup, static landing page, fake AI dashboard, or hardcoded demonstration.
+
+Build a real, integrated application with working frontend, backend, database, AI orchestration, SerpApi search, validation, error handling, tests, and documentation.
+
+The solution must be suitable for the SerpApi India Hackathon 2026, with a submission deadline of October 10, 2026, 11:59 PM IST.
+
+Prioritize a fully working MVP before implementing advanced features.
+
+⸻
+
+1. PROJECT IDENTITY
+
+Project Name: ScamShield AI
+
+Tagline: Verify Before You Trust.
+
+Project Type: Agentic AI-Powered Web Application
+
+Domains:
+
+* Digital Fraud Protection
+* Cybersecurity Awareness
+* Internship Verification
+* Job Intelligence
+* Career Safety
+* Evidence-Based AI Investigation
+
+Primary Hackathon Track: Knowledge & Public Interest
+
+Secondary Relevant Track: AI Agents
+
+Problem Statement
+
+Students, fresh graduates, job seekers, and everyday internet users frequently encounter suspicious job offers, fake internships, phishing links, misleading websites, recruiter impersonation, fraudulent messages, and questionable online opportunities.
+
+Existing tools are often fragmented. Users may need separate websites to check a suspicious URL, investigate a company, verify a job posting, compare internship opportunities, or understand potentially harmful contract terms.
+
+Many users also lack the technical knowledge needed to evaluate online risks.
+
+Proposed Solution
+
+Build ScamShield AI, an intelligent web platform that allows users to submit URLs, messages, job postings, internship offers, and relevant documents.
+
+An AI investigation agent uses structured analysis, SerpApi search results, official websites, and available public evidence to identify suspicious indicators and provide understandable recommendations.
+
+The system must distinguish verified facts, suspicious indicators, unverified claims, and missing evidence.
+
+It must never guarantee that a website, recruiter, company, or opportunity is safe.
+
+⸻
+
+2. APPLICATION MODULES
+
+Build three integrated modules.
+
+MODULE 1 — DIGITAL FRAUD PROTECTION
+
+Feature 1: Suspicious URL Scanner
+
+* Accept URLs.
+* Validate and normalize URL format.
+* Extract domain and relevant URL characteristics.
+* Identify suspicious domain patterns.
+* Detect potential brand impersonation.
+* Check HTTPS presence without treating HTTPS as proof of legitimacy.
+* Use appropriate reputation services if configured.
+* Search public evidence using SerpApi.
+* Return an evidence-based risk assessment.
+
+Feature 2: WhatsApp / SMS Scam Analyzer
+
+* Accept pasted messages.
+* Detect urgency and pressure tactics.
+* Identify suspicious payment requests.
+* Detect credential and OTP requests.
+* Extract embedded URLs safely.
+* Identify possible impersonation.
+* Explain suspicious patterns in simple language.
+
+Feature 3: Phishing Email Analyzer
+
+* Analyze pasted email text and optional headers.
+* Identify suspicious sender domains.
+* Compare claimed organizations against official domains.
+* Detect phishing language and malicious requests.
+* Clearly distinguish spoofing indicators from confirmed spoofing.
+
+Feature 4: Fake Shopping Website Detector
+
+* Identify suspicious storefront signals.
+* Check public reputation evidence.
+* Look for brand impersonation indicators.
+* Identify unrealistic promotional claims.
+* Explain payment and personal-data risks.
+
+Feature 5: QR Code Safety Analyzer
+
+* Accept an uploaded QR image.
+* Decode the QR content.
+* Display the destination without opening it automatically.
+* Analyze embedded URLs or payment instructions.
+* Warn before users follow suspicious links.
+
+Feature 6: SerpApi Evidence Investigator
+
+* Search for official company domains.
+* Find relevant public warnings and reports.
+* Discover contradictory claims.
+* Retrieve relevant search result titles, URLs, and snippets.
+* Store provenance and retrieval timestamps.
+* Avoid treating search rankings as credibility scores.
+
+Feature 7: Explainable Fraud Risk Report
+
+Generate:
+
+* Risk score from 0–100, where higher means more risk.
+* Risk classification: Low, Medium, High, or Insufficient Evidence.
+* Observed red flags.
+* Supporting evidence.
+* Contradictory evidence.
+* Unverified information.
+* Confidence assessment.
+* Recommended safety actions.
+* Downloadable PDF report.
+
+Feature 8: AI Safety Assistant
+
+Allow users to ask follow-up questions about their analysis.
+
+The assistant must ground its explanations in collected evidence and explicitly acknowledge uncertainty.
+
+Feature 9: Fraud Reporting Assistant
+
+* Organize evidence into a readable incident summary.
+* Provide relevant reporting guidance.
+* Include India’s official National Cyber Crime Reporting Portal where appropriate.
+* Do not submit complaints automatically.
+
+Feature 10: Scan History
+
+* Save user-approved reports.
+* Allow users to review and delete their history.
+* Support anonymous scans without mandatory accounts.
+
+⸻
+
+3. MODULE 2 — INTERNSHIPSHIELD AI
+
+Create a dedicated internship intelligence and verification module.
+
+Feature 11: Fake Internship Detector
+
+* Accept internship descriptions, links, messages, and offer letters.
+* Extract company name, role, stipend, duration, fees, and eligibility.
+* Search official company information.
+* Identify suspicious upfront payment requests.
+* Compare listing details across sources.
+* Produce an evidence-based assessment.
+
+Feature 12: Recruiter Impersonation Detector
+
+* Compare recruiter email domains with official domains.
+* Identify lookalike domains.
+* Check publicly documented recruiter details when available.
+* Flag unsupported claims of company affiliation.
+* Avoid claiming a person’s identity has been definitively verified without reliable evidence.
+
+Feature 13: Ghost Internship / Job Detector
+
+* Identify repeated job listings.
+* Detect potentially outdated opportunities.
+* Compare posting dates when available.
+* Look for missing or inactive official listings.
+* Explain that repeated postings alone do not prove a ghost job.
+
+Feature 14: Internship Quality Score
+
+Evaluate:
+
+* Mentorship information.
+* Responsibilities.
+* Learning opportunities.
+* Stipend transparency.
+* Duration.
+* Workload.
+* Available company information.
+
+Keep quality scoring separate from fraud risk scoring.
+
+Feature 15: Stipend Fairness Analyzer
+
+* Compare stipends for similar roles.
+* Consider location, duration, and employment type.
+* Show the sample size and source quality where available.
+* Avoid inventing market salary statistics.
+
+Feature 16: Fake Certificate & Training Scheme Detector
+
+* Detect pay-to-certificate marketing patterns.
+* Investigate suspicious placement guarantees.
+* Identify misleading claims about recognition.
+* Distinguish legitimate paid training from potentially deceptive schemes.
+
+Feature 17: Internship Contract Risk Analyzer
+
+* Accept PDF or text-based offer letters.
+* Extract relevant clauses.
+* Identify unusual payment, penalty, bond, and data-sharing terms.
+* Highlight concerning conditions.
+* Provide general informational guidance, not definitive legal advice.
+
+Feature 18: Application Deadline Verifier
+
+* Extract advertised deadlines.
+* Search official sources for confirmation.
+* Show discrepancies and verification timestamps.
+* Mark deadlines as unverified when reliable information is unavailable.
+
+Feature 19: Recruitment Process Authenticity Analyzer
+
+* Compare described hiring steps with official public recruitment instructions.
+* Flag unusual fees, unofficial channels, and suspicious document requests.
+* Present evidence rather than unsupported conclusions.
+
+Feature 20: Internship-to-Job Opportunity Analyzer
+
+* Evaluate available evidence of full-time conversion opportunities.
+* Identify documented conversion policies.
+* Distinguish advertised possibilities from guaranteed outcomes.
+
+Feature 21: Opportunity Change Tracker
+
+* Allow users to save opportunities.
+* Track changes in descriptions, stipends, eligibility, and deadlines.
+* Compare stored snapshots.
+* Notify users only when meaningful changes are confirmed.
+
+⸻
+
+4. MODULE 3 — JOBSHIELD AI
+
+Create a dedicated job discovery, verification, and career assistance module.
+
+Feature 22: AI Job Finder
+
+Allow users to enter:
+
+* Skills.
+* Preferred job role.
+* Experience level.
+* Location.
+* Remote/on-site preference.
+* Salary expectations.
+
+Use SerpApi-supported search capabilities to discover relevant public job listings.
+
+Display source links, available dates, and job details.
+
+Feature 23: Fake Job Detector
+
+* Analyze job descriptions and recruitment messages.
+* Detect suspicious payment demands.
+* Identify impersonation signals.
+* Search for official job listings.
+* Return evidence-based risk reports.
+
+Feature 24: Recruiter Verification
+
+* Cross-check recruiter contact domains.
+* Search public official company channels.
+* Explain whether recruiter claims are confirmed, contradicted, or unverified.
+
+Feature 25: Resume ATS Match Analyzer
+
+* Accept PDF resumes.
+* Extract skills and experience.
+* Compare against a selected job description.
+* Calculate an explainable relevance score.
+* Highlight missing requirements.
+* Suggest resume improvements.
+
+Do not present the score as a real employer’s ATS result.
+
+Feature 26: AI Eligibility Checker
+
+Compare:
+
+* Educational qualification.
+* Skills.
+* Experience.
+* Graduation requirements.
+* Certifications.
+* Location restrictions.
+
+Classify each requirement as Matched, Not Matched, or Unknown.
+
+Feature 27: Job Market Demand Analyzer
+
+* Search recent public job listings.
+* Analyze frequently mentioned skills.
+* Display available sample counts.
+* Explain sampling and coverage limitations.
+* Avoid claiming comprehensive labor-market statistics.
+
+Feature 28: Salary Comparison
+
+* Search available salary information.
+* Compare similar roles.
+* Distinguish reported salary, advertised salary, and estimates.
+* Show source references and uncertainty.
+
+Feature 29: AI Skill Gap Analyzer
+
+* Identify missing skills for a selected role.
+* Prioritize skills by relevance.
+* Recommend practical learning steps.
+
+Feature 30: AI Career Roadmap Generator
+
+Generate:
+
+* Personalized skill roadmap.
+* Learning milestones.
+* Suggested projects.
+* Interview preparation topics.
+* Optional 30/60/90-day learning plan.
+
+Feature 31: AI Interview Preparation
+
+* Generate role-specific questions.
+* Support technical and HR interview practice.
+* Provide constructive feedback.
+* Avoid pretending that mock scores predict hiring outcomes.
+
+Feature 32: Application Tracker
+
+Support:
+
+* Saved.
+* Applied.
+* Assessment.
+* Interview.
+* Offer.
+* Rejected.
+
+Allow manual status updates and optional reminders.
+
+⸻
+
+5. SOURCE CREDIBILITY & EVIDENCE CONFIDENCE ENGINE
+
+This is a cross-module feature and must be central to the application.
+
+Implement:
+
+* Source URL tracking.
+* Retrieval timestamps.
+* Official versus third-party source classification.
+* Corroboration checks.
+* Contradiction detection.
+* Evidence completeness checks.
+* Transparent uncertainty reporting.
+
+Never fabricate sources, citations, company information, reviews, dates, or investigation results.
+
+A missing search result is not proof that a job or website is fraudulent.
+
+Keep separate:
+
+1. Fraud risk.
+2. Evidence confidence.
+3. Opportunity quality.
+4. Job or resume relevance.
+
+Do not combine these into one misleading universal score.
+
+⸻
+
+6. AGENTIC AI ARCHITECTURE
+
+Build a controlled AI investigation workflow.
+
+Agent A: Intake & Classification Agent
+
+Classify incoming requests:
+
+* URL scan.
+* Message analysis.
+* Internship verification.
+* Job verification.
+* Resume matching.
+* General safety inquiry.
+
+Agent B: Research Agent
+
+Use SerpApi to gather relevant public evidence.
+
+Agent C: Verification Agent
+
+Compare claims against authoritative sources and identify inconsistencies.
+
+Agent D: Risk Analysis Agent
+
+Use deterministic risk rules and AI-assisted contextual reasoning to identify potential risks.
+
+Agent E: Recommendation Agent
+
+Generate grounded, understandable next steps.
+
+Agent F: Report Agent
+
+Produce structured JSON reports and downloadable PDF summaries.
+
+Agent Workflow
+
+User Input
+→ Input Validation
+→ Task Classification
+→ Research Planning
+→ SerpApi Search
+→ Evidence Collection
+→ Source Verification
+→ Risk & Confidence Assessment
+→ AI Explanation
+→ Final Dashboard Report
+
+Use bounded tool calls, timeouts, retry limits, and structured outputs.
+
+An LLM should never be allowed to invent a tool result or silently mark an investigation successful after an API failure.
+
+⸻
+
+7. TECHNOLOGY STACK
+
+Frontend
+
+* React.
+* TypeScript.
+* Vite.
+* Tailwind CSS.
+* React Router.
+* Lucide icons.
+* Recharts for analytics.
+
+Backend
+
+* Python 3.11+.
+* FastAPI.
+* Pydantic.
+* SQLAlchemy.
+* HTTPX.
+* SerpApi integration.
+
+AI Layer
+
+* Provider-configurable LLM API.
+* Structured JSON responses.
+* Explicit tool orchestration.
+* Deterministic rule-based risk signals.
+* Source-grounded report generation.
+
+Database
+
+* SQLite for the local hackathon MVP.
+* PostgreSQL-compatible architecture for future deployment.
+
+Additional Libraries
+
+* PyMuPDF or equivalent for PDF extraction.
+* QR decoding library.
+* ReportLab for PDF generation.
+* Pytest for backend tests.
+
+Avoid unnecessary paid services.
+
+⸻
+
+8. WEBSITE UI/UX DESIGN
+
+Create a premium cybersecurity SaaS-style dashboard.
+
+Design Direction
+
+* Dark navy / charcoal backgrounds.
+* Electric blue accents.
+* Teal or green verified-evidence indicators.
+* Amber caution indicators.
+* Red high-risk indicators.
+* Modern typography.
+* Rounded cards.
+* Smooth, restrained animations.
+* Fully responsive mobile and desktop layouts.
+
+Do not create a generic student assignment website.
+
+Required Pages
+
+1. Landing Page.
+2. Dashboard.
+3. URL Scanner.
+4. Message Analyzer.
+5. Internship Verification.
+6. JobShield AI.
+7. Job Search Results.
+8. Resume Match Analyzer.
+9. Evidence & Risk Report.
+10. Saved Reports.
+11. Settings.
+12. About / Methodology.
+
+Landing Page
+
+Hero heading:
+ScamShield AI — Verify Before You Trust.
+
+Subheading:
+Your AI-powered protection against suspicious links, fake internships, recruitment scams, and misleading online opportunities.
+
+Primary actions:
+
+* Scan a Link.
+* Verify an Internship.
+* Find & Verify Jobs.
+
+Include feature previews and a clear explanation of the evidence-based approach.
+
+⸻
+
+9. BACKEND API DESIGN
+
+Implement REST APIs with versioned routes.
+
+Suggested endpoints:
+
+POST /api/v1/scans/url
+
+POST /api/v1/scans/message
+
+POST /api/v1/scans/email
+
+POST /api/v1/internships/analyze
+
+POST /api/v1/jobs/analyze
+
+GET /api/v1/jobs/search
+
+POST /api/v1/resume/match
+
+POST /api/v1/agent/investigate
+
+GET /api/v1/reports/{report_id}
+
+GET /api/v1/reports/{report_id}/pdf
+
+GET /api/v1/health
+
+Implement request validation, consistent errors, status codes, and documented response schemas.
+
+Example risk report JSON:
+
+{
+“report_id”: “demo-report-001”,
+“analysis_type”: “internship”,
+“risk_score”: 78,
+“risk_level”: “high”,
+“evidence_confidence”: “medium”,
+“red_flags”: [
+“Upfront registration fee requested”,
+“Recruiter domain differs from official company domain”
+],
+“verified_facts”: [],
+“unverified_claims”: [
+“Recruiter affiliation has not been confirmed”
+],
+“sources”: [],
+“recommendation”: “Verify through official company channels before sharing personal information or making payment”
+}
+
+This JSON is illustrative only. Actual reports must be generated from collected evidence.
+
+⸻
+
+10. SERPAPI INTEGRATION
+
+SerpApi must be a core project dependency, not a decorative integration.
+
+Implement a reusable search service.
+
+The service should support:
+
+* General web research.
+* Company domain discovery.
+* Official recruitment page discovery.
+* Public job listing research.
+* Internship verification research.
+* Relevant scam-warning searches.
+* Salary and skill-market research where available.
+
+Use only supported SerpApi engines and documented parameters.
+
+API credentials must be stored in backend environment variables.
+
+Example:
+
+SERPAPI_API_KEY=your_key_here
+
+Never expose the key in frontend JavaScript.
+
+Implement:
+
+* Search query construction.
+* Result normalization.
+* Deduplication.
+* Source metadata.
+* Request timeout.
+* Error handling.
+* Rate-limit awareness.
+* Response caching where appropriate.
+
+If the key is missing, clearly display an integration configuration error rather than presenting fabricated live results.
+
+⸻
+
+11. SECURITY & PRIVACY REQUIREMENTS
+
+This application processes potentially dangerous URLs and sensitive job documents.
+
+Implement:
+
+* URL input validation.
+* SSRF protection.
+* Blocked internal/private network addresses.
+* Safe redirect handling.
+* Strict upload file types.
+* File size limits.
+* No automatic execution of downloaded content.
+* No automatic opening of submitted suspicious URLs.
+* Safe text extraction.
+* XSS protections.
+* API rate limiting.
+* Secrets stored server-side.
+* Sensitive data redaction.
+* Minimal data retention.
+* User-controlled deletion.
+* No unnecessary logging of resumes, phone numbers, or personal documents.
+
+Treat submitted content and search results as untrusted data, not as instructions for the AI agent.
+
+Do not send complete resumes or personal documents to third-party models without clear user disclosure and consent.
+
+⸻
+
+12. DATABASE DESIGN
+
+Create tables or equivalent models for:
+
+Users (optional for MVP)
+
+Scans
+
+EvidenceSources
+
+RiskReports
+
+InternshipOpportunities
+
+JobListings
+
+SavedJobs
+
+ResumeAnalyses
+
+ApplicationTracking
+
+OpportunitySnapshots
+
+Store appropriate timestamps, report status, and provenance.
+
+For the MVP, anonymous scans should work without registration.
+
+⸻
+
+13. TESTING REQUIREMENTS
+
+Create meaningful automated tests for:
+
+* Valid URL submission.
+* Invalid URL rejection.
+* Unsafe internal URL rejection.
+* Suspicious message analysis.
+* Fake internship sample.
+* Legitimate-looking internship sample.
+* Recruiter domain mismatch.
+* Missing SerpApi credentials.
+* SerpApi timeout.
+* Empty search results.
+* Contradictory evidence.
+* PDF generation.
+* Resume upload validation.
+* API schema validation.
+
+Use mocked API responses for deterministic tests.
+
+Do not claim tests passed unless they actually execute successfully.
+
+⸻
+
+14. REQUIRED PROJECT STRUCTURE
+
+scamshield-ai/
+frontend/
+src/
+components/
+pages/
+hooks/
+services/
+types/
+App.tsx
+package.json
+
+backend/
+app/
+api/
+agents/
+services/
+models/
+schemas/
+security/
+database/
+main.py
+tests/
+requirements.txt
+
+docs/
+architecture.md
+api.md
+demo-script.md
+
+.env.example
+.gitignore
+README.md
+
+docker-compose.yml
+
+You may improve this structure where necessary, but maintain a clean separation of responsibilities.
+
+⸻
+
+15. HACKATHON MVP PRIORITIES
+
+The submission deadline is October 10, 2026, 11:59 PM IST.
+
+Build in this order.
+
+Phase 1 — Essential Working Application
+
+1. React dashboard.
+2. FastAPI backend.
+3. Real SerpApi integration.
+4. URL Scanner.
+5. Message Analyzer.
+6. Fake Internship Detector.
+7. Recruiter Domain Verification.
+8. Evidence-based Risk Report.
+9. Job Search with source links.
+
+Phase 2 — High-Impact Improvements
+
+1. Ghost Job Detector.
+2. Resume Match Analyzer.
+3. Internship Quality Score.
+4. PDF Report.
+5. Improved UI and mobile responsiveness.
+
+Phase 3 — Future Roadmap
+
+Implement remaining advanced features only after the MVP works end to end.
+
+If time is insufficient, document unimplemented features clearly instead of creating fake buttons or misleading demonstrations.
+
+⸻
+
+16. GITHUB & TEAM WORKFLOW
+
+Support a team of 3–5 developers.
+
+Recommended assignments:
+
+Developer 1:
+Frontend, UI/UX, routing, responsive dashboard.
+
+Developer 2:
+FastAPI backend, database, API schemas.
+
+Developer 3:
+SerpApi integration, research tools, AI orchestration.
+
+Developer 4:
+Fraud rules, evidence verification, risk engine.
+
+Developer 5:
+Testing, deployment, documentation, presentation.
+
+For a team of three, merge related responsibilities.
+
+Use Git feature branches, pull requests, code reviews, and a protected main branch where practical.
+
+Create a clear README containing:
+
+* Problem statement.
+* Proposed solution.
+* Architecture.
+* Main features.
+* SerpApi usage.
+* Local setup.
+* Environment variables.
+* Screenshots.
+* Limitations.
+* Demo instructions.
+* Future roadmap.
+
+⸻
+
+17. DEMO SCENARIOS
+
+Prepare three end-to-end scenarios.
+
+Demo A: Suspicious Internship
+
+A student receives an internship message requesting an upfront registration fee.
+
+Show:
+
+* Submitted message.
+* Extracted claims.
+* SerpApi investigation.
+* Red flags.
+* Evidence links.
+* Risk report.
+
+Demo B: Suspicious Shopping Link
+
+A user pastes a potentially impersonating shopping website URL.
+
+Show:
+
+* Domain analysis.
+* Search evidence.
+* Potential impersonation indicators.
+* Safety recommendations.
+
+Demo C: JobShield
+
+A user searches for a Python Developer role.
+
+Show:
+
+* Relevant public job listings.
+* Official source links.
+* Job details.
+* Basic eligibility comparison.
+* Recruiter verification where evidence is available.
+
+All demonstrations must use clearly labeled sample inputs or genuine retrieved information.
+
+⸻
+
+18. FINAL DELIVERABLES
+
+Provide:
+
+1. Complete frontend source code.
+2. Complete backend source code.
+3. Working SerpApi integration.
+4. AI agent orchestration.
+5. Database models.
+6. Risk analysis engine.
+7. PDF report generator.
+8. Automated tests.
+9. Environment configuration template.
+10. README.
+11. Architecture documentation.
+12. Local run instructions.
+13. Deployment instructions.
+14. Demo script.
+15. Hackathon submission summary.
+
+No hardcoded API secrets.
+
+No fabricated test results.
+
+No fake live investigation results.
+
+No unsupported claims of perfect fraud detection.
+
+⸻
+
+19. EXECUTION INSTRUCTIONS FOR THE CODING AGENT
+
+Start by inspecting the existing project directory.
+
+If an existing codebase is present, preserve working functionality and integrate the requested features without unnecessary rewrites.
+
+If no codebase exists, scaffold the application from scratch.
+
+Do not stop after producing an architecture proposal.
+
+Create the actual project files.
+
+Implement the Phase 1 MVP first.
+
+After each milestone:
+
+* Run applicable tests.
+* Fix errors.
+* Confirm frontend-backend connectivity.
+* Verify actual SerpApi requests when credentials are available.
+* Report what is implemented versus planned.
+
+Use environment variables for credentials.
+
+If credentials are unavailable, implement the integration and use explicitly labeled test fixtures for local testing.
+
+Never claim a real search happened when only mock data was used.
+
+Ensure the application starts successfully and its core workflow works.
+
+Finish with exact commands for installing dependencies, configuring environment variables, running the backend, running the frontend, executing tests, and preparing the GitHub repository.
+
+FINAL GOAL
+
+Deliver a working, visually polished, evidence-driven, agentic AI web application that helps students and everyday internet users investigate suspicious online activity, evaluate internships, discover job opportunities, and make safer decisions.
+
+The central innovation must be autonomous, bounded, evidence-grounded research using SerpApi, not merely a chatbot or static dashboard.
+
+Build ScamShield AI — Verify Before You Trust.

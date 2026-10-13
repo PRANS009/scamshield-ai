@@ -1,0 +1,68 @@
+import {test,expect} from '@playwright/test';
+test('scan, report, export, save, reopen, delete',async({page})=>{
+ const errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));
+ await page.goto('/scan/message');
+ await page.getByRole('button',{name:'Load a fictional test input'}).click();
+ await page.getByRole('button',{name:'Investigate',exact:true}).click();
+ await expect(page.getByRole('heading',{name:'Clarity before your next step.'})).toBeVisible();
+ await expect(page.getByText('Credential or OTP request',{exact:true})).toBeVisible();
+ await expect(page.getByText('Research: not_requested',{exact:true})).toBeVisible();
+ const dl=page.waitForEvent('download');await page.getByRole('button',{name:'Download PDF'}).click();
+ expect((await dl).suggestedFilename()).toBe('scamshield-report.pdf');
+ await page.getByRole('button',{name:'Save report',exact:true}).click();
+ await expect(page.getByRole('button',{name:'Saved',exact:true})).toBeVisible();
+ await page.getByRole('link',{name:'Saved reports',exact:true}).click();
+ await page.getByRole('button',{name:'Open report'}).click();
+ await expect(page.getByRole('heading',{name:'Clarity before your next step.'})).toBeVisible();
+ await page.getByRole('link',{name:'Saved reports',exact:true}).click();
+ await page.getByRole('button',{name:'Delete report'}).click();
+ await expect(page.getByRole('heading',{name:'No saved reports yet'})).toBeVisible();
+ expect(errors).toEqual([]);
+});
+test('missing credentials shows honest research failure',async({page})=>{
+ await page.goto('/scan/internship');
+ await page.getByRole('button',{name:'Load a fictional test input'}).click();
+ await page.getByLabel('Company name').fill('Fictional Example');
+ await page.getByRole('checkbox',{name:/Research with SerpApi/}).check();
+ await page.getByRole('button',{name:'Investigate',exact:true}).click();
+ await expect(page.getByText('Research: failed',{exact:true})).toBeVisible();
+ await expect(page.getByText('SERPAPI_API_KEY is not configured. Live research was not performed.',{exact:true})).toBeVisible();
+});
+test('resume matching and tracker persistence',async({page})=>{
+ await page.goto('/resume');
+ await page.getByLabel('Resume text').fill('I build Python SQL applications.');
+ await page.getByLabel('Job description',{exact:true}).fill('Python SQL Docker experience required.');
+ await page.getByRole('button',{name:'Compare skills'}).click();
+ await expect(page.getByRole('heading',{name:'67%'})).toBeVisible();
+ await page.getByRole('link',{name:'Application tracker',exact:true}).click();
+ await page.getByLabel('title',{exact:true}).fill('Python internship test');
+ await page.getByRole('button',{name:'Save opportunity'}).click();
+ await expect(page.getByRole('heading',{name:'Python internship test'})).toBeVisible();
+ await page.getByLabel('Status for Python internship test').selectOption('Interview');
+ await expect(page.getByLabel('Status for Python internship test')).toHaveValue('Interview');
+ await page.reload();await expect(page.getByLabel('Status for Python internship test')).toHaveValue('Interview');
+ await page.getByRole('button',{name:'Delete Python internship test'}).click();
+ await expect(page.getByText('Your application tracker is empty.')).toBeVisible();
+});
+test('desktop and mobile layouts, navigation and screenshots',async({page})=>{
+ await page.goto('/dashboard');
+ await expect(page.getByRole('heading',{name:'A little clarity goes a long way.'})).toBeVisible();
+ await page.screenshot({path:'../docs/screenshots/dashboard.png',fullPage:true});
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBeTruthy();
+ await page.setViewportSize({width:390,height:844});
+ await expect.poll(async()=>await page.locator('.sidebar').evaluate(el=>el.getBoundingClientRect().right)).toBeLessThanOrEqual(0);
+ await page.screenshot({path:'../docs/screenshots/mobile.png',fullPage:true,animations:'disabled'});
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBeTruthy();
+ await page.getByRole('button',{name:'Open navigation'}).click();
+ await page.getByRole('link',{name:'URL scanner',exact:true}).click();
+ await expect(page.getByRole('heading',{name:'Scan a suspicious link'})).toBeVisible();
+ await page.getByLabel('Website URL').fill('http://127.0.0.1');
+ await page.getByRole('button',{name:'Investigate',exact:true}).click();
+ await expect(page.getByRole('alert')).toContainText('Only public HTTP(S)');
+});
+test('landing and career workflow render',async({page})=>{
+ await page.goto('/');await page.screenshot({path:'../docs/screenshots/landing.png',fullPage:true});
+ await page.goto('/career');await page.getByRole('button',{name:'Build my roadmap'}).click();
+ await expect(page.getByRole('heading',{name:'Foundations',exact:true})).toBeVisible();
+ await expect(page.getByRole('heading',{name:'Interview practice',exact:true})).toBeVisible();
+});
