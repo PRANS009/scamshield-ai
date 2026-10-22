@@ -21,15 +21,22 @@ async def explain(report, question='Explain the risk indicators and safest next 
         'Return JSON only with answer (string), source_ids (array of existing source IDs used), uncertainty (string). '
         'If evidence is absent explicitly say that. Do not offer definitive legal advice.')
     try:
-        async with httpx.AsyncClient(timeout=20,follow_redirects=False) as client:
+        async with httpx.AsyncClient(timeout=25,follow_redirects=False) as client:
             response=await client.post(config.LLM_BASE_URL+'/chat/completions',headers={'Authorization':'Bearer '+config.LLM_KEY},json={
                 'model':config.LLM_MODEL,'messages':[{'role':'system','content':system},{'role':'user','content':json.dumps({'report':evidence,'question':redact(question)})}],
                 'response_format':{'type':'json_object'},'temperature':0.1,'max_tokens':1000})
+            # Google's OpenAI-compat endpoint returns a JSON list on error instead of a dict.
+            raw=response.json()
+            if isinstance(raw,list):
+                err=raw[0].get('error',{}) if raw else {}
+                return None,f'AI provider error ({err.get("status",response.status_code)}): {err.get("message","Unknown error")}. Deterministic report remains available.'
             response.raise_for_status()
-            result=Explanation.model_validate_json(response.json()['choices'][0]['message']['content'])
+            result=Explanation.model_validate_json(raw['choices'][0]['message']['content'])
             valid={s.id for s in report.sources}
             if not set(result.source_ids).issubset(valid):
                 return None,'AI output rejected: unsupported source IDs.'
             return result.model_dump(),'AI-assisted explanation; inspect original evidence. AI does not change the rule score.'
+    except httpx.TimeoutException:
+        return None,'AI explanation timed out. Deterministic report remains available.'
     except (httpx.HTTPError,ValueError,KeyError,IndexError,TypeError):
         return None,'AI explanation unavailable or invalid. Deterministic report remains available.'

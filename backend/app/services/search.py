@@ -25,30 +25,38 @@ class SearchService:
         cached = self.cache.get(cache_key)
         if cached and time.monotonic() - cached[0] < 600:
             return copy.deepcopy(cached[1])
+        # google_jobs results can take longer to compile; use a higher timeout.
+        timeout = 35 if engine == 'google_jobs' else 25
         async with self.gate:
-            async with httpx.AsyncClient(timeout=12, transport=self.transport, follow_redirects=False) as client:
+            async with httpx.AsyncClient(timeout=timeout, transport=self.transport, follow_redirects=False) as client:
                 for attempt in range(2):
                     try:
                         response = await client.get('https://serpapi.com/search.json',params={
                             'engine':engine,'q':query,'api_key':self.key,'hl':'en','gl':'in'})
                         if response.status_code == 429:
                             raise SearchError('SerpApi rate limit or credit limit reached. Please retry later.')
-                        if response.status_code in (500,502,503,504) and attempt == 0:
-                            await asyncio.sleep(.25)
-                            continue
+                        if response.status_code in (500,502,503,504):
+                            if attempt < 1:
+                                await asyncio.sleep(1.0)
+                                continue
+                            raise SearchError('SerpApi service temporarily unavailable. Please retry in a moment.')
                         response.raise_for_status()
                         result = response.json()
-                        if result.get('error'):
-                            raise SearchError('SerpApi returned an error; check your account credits and search settings.')
+                        err = str(result.get('error', ''))
+                        if err:
+                            if "hasn't returned any results" in err.lower() or "no results" in err.lower():
+                                result = {'organic_results': [], 'jobs_results': [], '_retrieved_at': now()}
+                            else:
+                                raise SearchError('SerpApi returned an error: ' + err)
                         result['_retrieved_at'] = now()
                         self.cache[cache_key] = (time.monotonic(),copy.deepcopy(result))
                         while len(self.cache)>128:
                             self.cache.popitem(last=False)
                         return result
                     except httpx.TimeoutException:
-                        if attempt == 0:
+                        if attempt < 1:
                             continue
-                        raise SearchError('SerpApi timed out. Research is incomplete.') from None
+                        raise SearchError('SerpApi timed out after multiple attempts. Try again or check your connection.') from None
                     except (httpx.HTTPError,ValueError):
                         raise SearchError('SerpApi request failed. No live results are available for this query.') from None
 

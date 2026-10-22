@@ -49,9 +49,9 @@ async def investigate(request, search=None):
                 except SearchError as exc:
                     errors.append(str(exc));status='partial'
         try:
-            await asyncio.wait_for(research(),timeout=45)
+            await asyncio.wait_for(research(),timeout=90)
         except asyncio.TimeoutError:
-            errors.append('Research exceeded the 45-second total budget.')
+            errors.append('Research exceeded the 90-second total budget.')
             status='partial' if sources else 'failed'
         if not sources and status=='complete':
             status='empty'

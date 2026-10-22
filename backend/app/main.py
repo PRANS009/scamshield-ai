@@ -78,7 +78,7 @@ def owner(x_workspace_token:str=Header(default='')):
         raise HTTPException(401,'A valid local workspace token is required for saved data.') from None
     return hashlib.sha256(x_workspace_token.encode()).hexdigest()
 
-@app.get('/api/v1/health')
+@app.api_route('/api/v1/health',methods=['GET','HEAD'])
 def health():
     return {'status':'ok','version':'1.0.0','serpapi_configured':bool(config.SERPAPI_KEY),'llm_configured':bool(config.LLM_KEY and config.LLM_MODEL),
         'mode':'live integrations when configured; local heuristics otherwise'}
@@ -258,7 +258,7 @@ def erase(user=Depends(owner)):
 dist=Path(__file__).resolve().parents[2]/'frontend'/'dist'
 if dist.exists():
     app.mount('/assets',StaticFiles(directory=dist/'assets'),name='assets')
-    @app.get('/{path:path}',include_in_schema=False)
+    @app.api_route('/{path:path}',methods=['GET','HEAD'],include_in_schema=False)
     def spa(path:str):
         if path.startswith('api/'):
             raise HTTPException(404,'API route not found.')
