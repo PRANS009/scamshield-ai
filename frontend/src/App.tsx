@@ -98,7 +98,7 @@ function Landing() {
 
       <main>
         <span className="pill green">
-          <Sparkles size={13} /> Amazon Developer Hackathon 2026 · Alexa+ Track
+          <Sparkles size={13} /> ScamShield AI 2.0
         </span>
         <h1>
           Stop Scams Before<br />They <span>Stop You.</span>
@@ -474,7 +474,7 @@ export default function App() {
           </Routes>
 
           <footer className="app-footer">
-            ScamShield AI 2.0 · Amazon Developer Hackathon 2026 (Alexa+ Track)
+            ScamShield AI 2.0 · Verify Before You Trust.
             <span>Screening heuristics support human judgment. Not an assurance of safety.</span>
           </footer>
         </main>

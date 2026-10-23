@@ -21,7 +21,7 @@ import { api } from '../services/api';
 import { Busy } from '../components/ui';
 import type { ChatResponse, Report } from '../types';
 
-// The 3 official Hackathon Demo Scenarios
+// The three repeatable demo scenarios
 const DEMO_SCENARIOS = [
   {
     id: 'scenario-1',
@@ -187,11 +187,11 @@ export default function AlexaSimulator({
 
   return (
     <div className="alexa-simulator-page">
-      {/* Official Disclaimer Banner as required by Phase 3 */}
+      {/* ScamShield AI 2.0 simulator disclaimer */}
       <div className="alexa-disclaimer-banner">
         <Info size={16} />
         <div>
-          <strong>Amazon Developer Hackathon 2026 — Alexa+ Track Simulation</strong>
+          <strong>ScamShield AI 2.0 — Alexa+ Simulation</strong>
           <p>
             Browser-based conversational safety simulation demonstrating how ScamShield AI Guardian would operate on an Alexa+ voice/multimodal surface. Not an official Amazon Echo / Alexa+ device integration.
           </p>
@@ -310,11 +310,11 @@ export default function AlexaSimulator({
         )}
       </div>
 
-      {/* Repeatable Hackathon Demo Scenarios Grid */}
+      {/* Repeatable Demo Scenarios Grid */}
       <section className="demo-scenarios-section">
         <div className="section-title-row">
           <Sparkles size={18} className="gold" />
-          <h2>Hackathon Judge Demo Scenarios</h2>
+          <h2>ScamShield Demo Scenarios</h2>
         </div>
         <p className="section-subtitle">
           Test ScamShield's real detection engine instantly by clicking any repeatable test scenario below.
