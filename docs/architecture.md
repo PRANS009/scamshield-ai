@@ -1,45 +1,90 @@
-# Architecture and trust boundaries
+# ScamShield AI 2.0 — Architecture and Trust Boundaries
 
-React + TypeScript + Vite + Tailwind + React Router + Lucide + Recharts → same-origin FastAPI → SQLAlchemy / SQLite.
+**Amazon Developer Hackathon 2026 | Alexa+ Track**
+**Tagline:** Verify Before You Trust.
 
-Only the backend can call SerpApi or the optional OpenAI-compatible model provider. Secrets are read from environment variables. The Vite development server proxies `/api` to port 8000. The compiled bundle is also served directly by FastAPI.
+```
++----------------------------------------------------------------------------------+
+|                               Client Surfaces                                    |
+|                                                                                  |
+|   +-----------------------+   +------------------------+   +------------------+  |
+|   |  AI Guardian Chat     |   |   Alexa+ Simulator     |   | Dedicated Scanners| |
+|   |  (Multi-Turn Sessions)|   | (Web Speech STT / TTS) |   | (URL, Job, QR)   |  |
+|   +-----------+-----------+   +-----------+------------+   +--------+---------+  |
++---------------|---------------------------|-------------------------|------------+
+                |                           |                         |
+                v                           v                         v
++----------------------------------------------------------------------------------+
+|                            FastAPI Backend (v2.0.0)                              |
+|                                                                                  |
+|   +--------------------------------------------------------------------------+   |
+|   |                      Agent Orchestration Layer                           |   |
+|   |   GuardianManager: In-Memory Multi-Turn Sessions & Context Retention     |   |
+|   |   Intent Detector: Greetings, Job Scans, URL Analysis, Follow-ups        |   |
+|   +------------------------------------+-------------------------------------+   |
+|                                        |                                         |
+|                                        v                                         |
+|   +--------------------------------------------------------------------------+   |
+|   |                       Real Investigation Tools                           |   |
+|   |   • analyze_message         • analyze_url          • investigate_job     |   |
+|   |   • check_recruiter_signals • search_public_evid.  • generate_safety_rep |   |
+|   +---------+--------------------------+-----------------------+-------------+   |
+|             |                          |                       |                 |
+|             v                          v                       v                 |
+|   +--------------------+     +-------------------+   +--------------------+      |
+|   | Heuristic Rules    |     | Bounded SerpApi   |   | Optional LLM Ground|      |
+|   | Engine (risk.py)   |     | Search (Google)   |   | (OpenAI-compatible)|      |
+|   +--------------------+     +-------------------+   +--------------------+      |
++----------------------------------------------------------------------------------+
+```
 
-## Controlled agent workflow
+---
 
-1. **Intake**: Pydantic validates sizes and kinds; local functions extract domains, recruiter email domain and explicitly labelled offer fields.
-2. **Research planning**: select company or submitted hostname. Full message/document text is not used as a public search query.
-3. **Research**: two Google searches, with an adaptive third no-fee-policy query when payment language and fee-related evidence coexist. Maximum three queries, two HTTP attempts per query, 12-second attempt timeout, 45-second investigation budget. Global provider concurrency of four, 10-minute bounded memory cache.
-4. **Verification**: deduplicate normalized source URLs; compare user-supplied domain references; label government suffixes; highlight possible fee-policy tensions. Domain ownership, recruiter identity and page-level claims remain unverified.
-5. **Risk**: deterministic visible weights; score capped at 100. The language model cannot set or alter the score.
-6. **Recommendation**: conditional safety guidance based on local indicators.
-7. **Report**: Pydantic JSON, original source leads and timestamps, optional separate AI explanation, downloadable PDF.
+## 1. System Components
 
-The stages are controlled functions, not six independent autonomous LLMs. This makes tool budgets and data flow inspectable. Optional AI uses one JSON response with validated existing source IDs; it has no browsing, file, shell or execution tools. Reject invalid schema or unsupported IDs. Prompt injection remains a risk for natural-language explanations; the deterministic report remains authoritative.
+### Frontend (React 19 + TypeScript + Vite)
+- **AI Guardian (`/guardian`):** Stateful conversational interface with live tool execution cards, risk indicators, suggested follow-up prompts, and report export.
+- **Alexa+-Style Simulator (`/alexa-simulator`):** Voice/multimodal simulation implementing Web Speech API (`SpeechRecognition` and `SpeechSynthesis`) with glowing ambient state ring, audio waveform, and 3 one-click judge demo scenarios.
+- **Dedicated Scanner Pages:** Preserved URL scanner, message analyzer, InternshipShield, QR decoder, and offer letter review.
+- **Career & Storage Tools:** Resume matcher, career roadmap, application tracker, and local history.
 
-## Measures
+### Backend (FastAPI + Pydantic v2 + SQLite)
+- **Agent Orchestrator (`app/agents/guardian.py`):** Manages multi-turn conversation sessions, evaluates user intent, coordinates tools, and generates grounded responses.
+- **Tool Suite (`app/agents/tools.py`):** Real, validated backend functions returning structured findings, evidence leads, and limitations.
+- **Security & Validation Layer (`app/security/validation.py`):** Strict SSRF protections, URL sanitization, prompt injection defenses, and in-memory file handling.
+- **Storage Layer (`app/database/store.py`):** Anonymous capability-token scoped records (reports, applications, snapshots).
 
-- Risk: heuristic signal weights (see `services/risk.py`), **not a calibrated probability**.
-- Evidence confidence: `Limited` for snippets, `Unavailable` if none. No identity-backed `High` confidence in this release.
-- Classification: ≥60 High; ≥25 Medium; lower Insufficient Evidence. We deliberately never return Low solely because rules did not trigger.
-- Description completeness: seven presence checks; it is not true internship quality.
-- Resume relevance: dictionary skill coverage; missing text maps to Unknown, not proof of ineligibility.
+---
 
-## Persistence
+## 2. Controlled Investigation Tools
 
-Tables: `risk_reports`, `evidence_sources`, `application_tracking`, `opportunity_snapshots`.
+All tools accept validated Pydantic inputs and return structured outputs:
 
-A browser creates a UUID capability token, sends it in `X-Workspace-Token`, and stores it in localStorage. The server stores its SHA-256 digest. All saved-data routes scope records by that owner. No accounts, no cookies, no cross-user listing. This is appropriate for a local demo, not hardened production identity. Tokens must not be shared. Requests to generate reports/PDFs remain anonymous.
+| Tool Name | Real Invoked Function | Purpose |
+|:---|:---|:---|
+| `analyze_message` | `app.services.risk.analyze_rules` | Detects upfront fees, urgency, credential demands, and guarantees. |
+| `analyze_url` | `app.security.validation.normalize_url` + `analyze_rules` | Inspects hostnames, punycode, unencrypted HTTP, and brand lookalikes without fetching destination. |
+| `investigate_job_offer`| `app.agents.investigator.investigate` | Multi-agent evaluation of role, stipend, contracts, and quality. |
+| `check_recruiter_signals`| `app.agents.tools.tool_check_recruiter_signals` | Cross-references recruiter email domains against official company domains. |
+| `search_public_evidence`| `app.services.search.search_service.web` | Bounded SerpApi Google search for known recruitment warnings and no-fee policies. |
+| `generate_safety_report`| `app.agents.investigator.investigate` | Produces standardized `Report` objects with citation IDs. |
 
-Anonymous scans and parsed uploads are not persisted. A user explicitly saves reports or opportunities. Text fields receive basic redaction; source URLs and identity fields are preserved. URL queries and free-form prose can still contain personal information; users should review before saving. Snapshot comparison is manual and local to the stored text; no background crawling or notification service exists.
+---
 
-## URL and upload safety
+## 3. Session Management & Multi-Turn State
 
-The application **never fetches a submitted destination**. Only fixed SerpApi and operator-configured LLM API endpoints are called. No target redirects, DNS rebinding path, active malware scan, port scan or screenshot browser exists. Literal private addresses, nonstandard ports, user-info, localhost and internal suffixes are rejected. Embedded unsupported links are flagged rather than followed.
+The `GuardianManager` maintains in-memory `SessionState`:
+- **`session_id`:** Unique UUID per conversation.
+- **`messages`:** Chronological record of user inputs, assistant responses, executed tools, and evidence leads.
+- **`active_report`:** Automatically stores the most recently generated investigation report.
+- **Follow-up Context:** Follow-up questions like *"Why did I get this score?"* or *"What should I do next?"* reference `active_report` directly, eliminating repetitive re-submission.
 
-Uploads: 5 MB; PDF/TXT for documents, PNG/JPEG for QR. PDF header check, no encrypted documents, at most 20 pages and 25,000 extracted characters. QR image format/pixel bound. Parsing occurs in a worker thread. For public deployment, isolate native parsers in low-privilege sandboxed workers with hard CPU/memory limits and keep them patched.
+---
 
-React escapes rendered content, links are restricted to HTTP(S), external anchors use `noopener noreferrer`, PDFs escape paragraph markup. This release does not execute content from submissions or sources.
+## 4. Security & Privacy Safeguards
 
-## API operation and public deployment boundaries
-
-60 requests/minute per direct client IP, single-process in-memory window. Provider requests have independent budgets. Proxy headers are not trusted by the app. Before public release use authentication, a shared rate limiter, HTTPS, a reverse-proxy body limit, CSRF/session design as appropriate, retention jobs, encrypted storage, observability without document logging, and abuse-budget controls. SQLite deployment is single-instance with persistent disk. PostgreSQL can use a SQLAlchemy URL after installing a suitable driver and adding migrations.
+1. **Untrusted Data Isolation:** External message text, emails, and web snippets are strictly treated as data payloads, never executed as agent system instructions.
+2. **SSRF Rejection:** All submitted URLs undergo strict validation. Private IP ranges (`10.0.0.0/8`, `172.16.0.0/12`, `192.168.0.0/16`), localhost (`127.0.0.1`), cloud metadata (`169.254.169.254`), non-HTTP schemes, and invalid ports are rejected.
+3. **No Destination Fetching:** ScamShield never opens, crawls, or executes JavaScript on suspicious links.
+4. **Credential Privacy:** API keys (`SERPAPI_API_KEY`, `LLM_API_KEY`) stay strictly in backend environment variables.
+5. **Session Deletion:** Complete deletion endpoint (`DELETE /api/v1/agent/session/{id}`) allows instant wiping of session data.

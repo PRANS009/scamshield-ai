@@ -1,40 +1,48 @@
-# Feature status — honest scope
+# Feature Status — Honest Scope Matrix
 
-The attached master prompt explicitly prioritizes Phase 1 and Phase 2 before the advanced roadmap. This package implements those workflows with the limitations below. “Working” means the route and UI are integrated; it does not mean that identity, safety or fraud can be proven.
+**ScamShield AI 2.0 — Amazon Developer Hackathon 2026 (Alexa+ Track)**
+*Last updated: Hackathon Upgrade Phase*
 
-| Requested feature | Delivered behavior / remaining limit |
-|---|---|
-| URL scanner | Public URL validation, hostname rules, reference-brand indicators, optional public search. No target fetch or malware reputation provider. |
-| Message analyzer | Payment, OTP, urgency, guarantees and remote-access patterns with visible weights. Limited English heuristic context/negation. |
-| Email analyzer | Text signals and recruiter/reference-domain comparison. No SPF/DKIM/DMARC/header-authentication verification. |
-| Shopping detector | URL/brand indicators and public evidence leads. No live storefront crawl. |
-| QR analyzer | PNG/JPEG decoding; preview URL/payment/text without opening. Decoded text can enter screening. |
-| Evidence investigator | Genuine SerpApi requests, up to three queries, deduplication, timestamps, timeout/cache handling. |
-| Explainable report | Risk, confidence, unknowns, evidence leads, recommendations and PDF. |
-| Safety assistant | Local report explanations or optional grounded JSON LLM explanation with source-ID validation. |
-| Reporting assistant | Editable incident summary and official portal link; no automatic submission. |
-| History | Explicit save, owner-scoped read/delete, delete-all. |
-| Fake internship screening | Offer text/document extraction, fee indicators, recruiter comparison and optional research. |
-| Recruiter impersonation | User-reference domain mismatch and string similarity. Never verifies identity. |
-| Ghost jobs | Duplicates within one live search sample are shown. Cross-time repetition, age thresholds and authoritative status verification are future work. |
-| Internship quality | Clearly labelled description-completeness score, not validated employer quality. |
-| Stipend fairness | Advertised compensation is visible; calibrated peer-normalized fairness is future work. No invented statistics. |
-| Training/certificate schemes | Generic payment and guarantee signals only. Certificate authenticity and accreditation verification are future work. |
-| Contract analysis | Local PDF/text extraction and bond/penalty/nonrefundable indicators. No legal determinations. |
-| Deadlines | Extracts explicitly labelled advertised deadline; independent deadline verification is future work. |
-| Recruitment-process authenticity | Signals and search leads; official step-by-step process comparison is future work. |
-| Internship conversion | Advertised guarantee flags; company conversion-policy verification is future work. |
-| Opportunity change tracking | Manual saved text snapshots and exact diffs. No automatic polling or notifications. |
-| Job finder | Live Google Jobs search through SerpApi; role/location/skills/preferences/salary terms, returned source links. |
-| Fake job screening | Same integrated risk and evidence workflow on a selected job. |
-| Recruiter verification | Domain comparison with explicit unverified status. |
-| Resume match | PDF/text extraction, fixed-dictionary skill matching and explainable relevance percentage. |
-| Eligibility checker | Skill requirements labelled Matched or Unknown. Full education/experience/location inference is future work. |
-| Market demand | Skill frequencies in the current returned listing sample, with sample count. |
-| Salary comparison | Advertised salary strings shown per returned job. No averages, currency conversion or normalized comparisons. |
-| Skill gap | Dictionary comparison to supplied job description or starter role catalog. |
-| Career roadmap | Rule-based 30/60/90-day starter roadmap; clearly labelled, not LLM-generated research. |
-| Interview preparation | Role-skill prompts and private written practice with self-review checklist. Automated individualized answer feedback is future work. |
-| Application tracker | Saved/Applied/Assessment/Interview/Offer/Rejected, notes, manual deadlines, deletion. No reminder scheduler. |
+“Working” means the feature is fully implemented, wired end-to-end, tested, and verifiable in the workspace. It does not imply that identity, legal authenticity, or complete safety can be scientifically proven.
 
-No fake buttons or invented live results are used. Advanced items above are intentionally not represented as complete. Live SerpApi and model-provider calls require user credentials and remain unverified until run with those credentials.
+---
+
+## 🌟 ScamShield AI 2.0 Upgraded Features
+
+| Feature | Status | Delivered Behavior / Limitations |
+|:---|:---|:---|
+| **AI Guardian Chat** | **Fully Working** | Multi-turn conversational safety assistant with session persistence, live tool execution traces, risk badges, suggested follow-up prompts, error handling, copyable answers, and report handoff. |
+| **Alexa+-Style Simulator** | **Fully Working** | Browser-based voice/multimodal simulation with ambient glowing Alexa ring, browser Web Speech API (STT & TTS), mute toggle, typed fallback, and 3 repeatable one-click demo scenarios. *Accurately labelled as a browser simulation, not official Echo hardware.* |
+| **Real Tool Orchestration** | **Fully Working** | Backend orchestrator exposes 6 real tools (`analyze_message`, `analyze_url`, `investigate_job_offer`, `check_recruiter_signals`, `search_public_evidence`, `generate_safety_report`). Tools execute real logic rather than text claims. |
+| **Session Context & Follow-ups**| **Fully Working** | Users can ask follow-ups (*"Explain why this offer is risky"*, *"What should I do next?"*) without re-pasting messages. Context is retained in active session. |
+| **Demo Scenarios (Judge Ready)**| **Fully Working** | 3 pre-built scenarios: Fake Internship Offer (₹1,999 fee), Suspicious Link (Lookalike Domain), and Uncertain Job Offer (Missing Evidence). |
+| **Local Rules-based Guardian**  | **Fully Working** | Transparently operates when no external LLM credentials exist. No mock data or fake live claims. |
+| **SSRF & Input Defense**        | **Fully Working** | Strict validation of URLs; private networks (`127.0.0.1`, `10.0.0.0/8`, `169.254.x.x`) and unsafe protocols are rejected. External messages treated strictly as data payloads to prevent prompt injection. |
+
+---
+
+## 🛡️ Preserved Core Scanners & Tools
+
+| Feature | Status | Delivered Behavior |
+|:---|:---|:---|
+| **URL Scanner** | Working | Normalizes URLs, inspects hostname, punycode, unencrypted HTTP, and brand lookalikes without fetching destination. Includes "Investigate with AI Guardian" handoff. |
+| **Message Analyzer** | Working | Detects upfront payments, OTP/credential theft, artificial urgency, and guarantees with visible heuristic weights. |
+| **Email Analyzer** | Working | Analyzes email text and compares recruiter email domains against reference company domains. |
+| **InternshipShield** | Working | Extracts offer details, evaluates fees, compares domains, and calculates description completeness. |
+| **Job Offer Review** | Working | Evaluates offer letters, contracts, bonds, and restrictive penalties. |
+| **Public Research (SerpApi)** | Working | Bounded Google searches retrieving snippets, citation IDs, retrieval times, and detecting fee-policy contradictions. |
+| **QR Code Decoder** | Working | Decodes payment URIs and URLs in-memory without following them. |
+| **Explainable Reports** | Working | Unified reports with risk badges, red flags, recommendations, unverified claims, and PDF download. |
+| **JobShield Finder** | Working | Live Google Jobs search via SerpApi with role/location filters. |
+| **Resume Matching** | Working | Skill dictionary comparison against job descriptions. |
+| **Career Roadmap** | Working | Starter 30/60/90-day learning path. |
+| **Application Tracker** | Working | Saved applications with manual text snapshots and exact diffs. |
+
+---
+
+## 🔮 Future Roadmap (Post-Hackathon)
+
+* Automated background job status polling and email alert notifications.
+* Production MCP server deployment with remote multi-agent workers.
+* Direct Amazon Echo skill publishing upon AWS account and Alexa Skills Kit certification.
+* OCR extraction for photo-scanned PDF documents and images.

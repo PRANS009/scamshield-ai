@@ -5,7 +5,7 @@ from app.security.validation import normalize_url, domain
 from app.schemas.core import Flag
 
 RULES = [
- ('upfront_fee',r'\b(?:pay|deposit|transfer|send)\b.{0,70}\b(?:fee|registration|security|money|rupees|inr|rs)\b|\b(?:registration|processing|joining|security)\s+(?:fee|deposit)\b',32,'Upfront payment language','Payment before verification is a risk indicator. Check the full context; legitimate paid training is distinct from employment.'),
+ ('upfront_fee',r'\b(?:pay|deposit|transfer|send)\b.{0,70}(?:fee|registration|verification|security|money|rupees|inr|rs|[₹\u20b9$€£])\b|\b(?:registration|processing|joining|security|verification)\s+(?:fee|deposit|charge|amount)\b',32,'Upfront payment language','Payment before verification is a risk indicator. Check the full context; legitimate paid training is distinct from employment.'),
  ('credentials',r'\b(?:share|send|provide|tell|enter)\b.{0,55}\b(?:otp|password|pin|cvv)\b',36,'Credential or OTP request','Requests to disclose credentials or transaction codes can expose your account.'),
  ('urgency',r'\b(?:immediately|urgent|within \d+ (?:minutes|hours)|last chance|act now|account.{0,15}(?:blocked|suspended))\b',12,'Urgency or pressure','Pressure can reduce time available for independent checks.'),
  ('guarantee',r'\b(?:guaranteed? (?:job|placement|selection|returns)|100% (?:placement|selection|guarantee))\b',15,'Guaranteed outcome claim','Absolute placement or return guarantees need independent supporting evidence.'),

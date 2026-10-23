@@ -1,8 +1,9 @@
-import {useState} from 'react';import {Link} from 'react-router-dom';
-import {Download,Bookmark,ExternalLink,ShieldAlert,Check,MessageCircle} from 'lucide-react';
+import {useState} from 'react';import {Link,useNavigate} from 'react-router-dom';
+import {Download,Bookmark,ExternalLink,ShieldAlert,Check,MessageCircle,Sparkles} from 'lucide-react';
 import {api,downloadReport} from '../services/api';import {useTask} from '../hooks/useTask';
 import {PageTitle,ErrorBox,Busy,SourceLink,List} from '../components/ui';import type {Report as ReportType} from '../types';
 export default function ReportPage({report}:{report:ReportType|null}){
+ const navigate=useNavigate();
  const task=useTask();const[saved,setSaved]=useState('');const[question,setQuestion]=useState('Why did I receive this score?');const[answer,setAnswer]=useState<any>(null);const[consent,setConsent]=useState(false);const[incident,setIncident]=useState<any>(null);
  if(!report)return <div className="empty"><ShieldAlert/><h1>No active report yet</h1><p>Run an investigation or open a saved report.</p><Link className="primary" to="/scan/message">Start an investigation</Link></div>;
  const r=report;
@@ -13,7 +14,24 @@ export default function ReportPage({report}:{report:ReportType|null}){
  {r.contradictory_evidence.length>0&&<><h3>Potential contradictions</h3><List items={r.contradictory_evidence}/></>}{r.supporting_evidence.length>0&&<><h3>Warning-related leads</h3><List items={r.supporting_evidence}/></>}</section>
  <div className="two-cols"><section className="panel"><h2>Extracted details</h2><p className="muted">Claims in submitted text, not independently verified facts.</p><dl>{Object.entries(r.extracted).map(([k,v])=><div key={k}><dt>{k.replaceAll('_',' ')}</dt><dd>{Array.isArray(v)?v.join(', ')||'None':String(v)}</dd></div>)}</dl>{r.quality&&<><h3>Description completeness · {r.quality.score}/100</h3><p>{r.quality.meaning}</p>{Object.entries(r.quality.criteria).map(([k,v])=><p key={k}>{v?'✓':'○'} {k}</p>)}</>}</section><section className="panel"><h2>Investigation trace</h2><div className="trace">{r.workflow.map((step,i)=><div key={step.agent}><span>{i+1}</span><section><h3>{step.agent} <small>{step.status}</small></h3><p>{step.detail}</p></section></div>)}</div></section></div>
  {r.ai_explanation&&<section className="panel"><h2>AI-assisted explanation</h2><p>{r.ai_explanation.answer}</p><p>Sources: {r.ai_explanation.source_ids.join(', ')||'None cited'}</p><p className="notice">{r.ai_explanation.uncertainty}</p></section>}<p className="muted">AI status: {r.ai_status}</p>
- <section className="panel"><h2><MessageCircle size={20}/> Ask about this report</h2><form onSubmit={e=>{e.preventDefault();task.run(async()=>setAnswer(await api('/assistant',{report:r,question,ai_consent:consent})));}}><label>Question<input value={question} onChange={e=>setQuestion(e.target.value)} minLength={3} maxLength={1000} required/></label><label className="check"><input type="checkbox" checked={consent} onChange={e=>setConsent(e.target.checked)}/>Use configured AI provider; share redacted report excerpts and question.</label><button disabled={task.busy}>{task.busy?<Busy/>:'Explain'}</button></form>{answer&&<div className="answer"><span className="pill">{answer.mode}</span><p>{answer.answer}</p><small>{answer.uncertainty}</small></div>}</section>
+ <section className="panel">
+   <div className="section-heading">
+     <h2><MessageCircle size={20}/> Ask about this report</h2>
+     <button
+       type="button"
+       className="guardian-btn"
+       onClick={() => navigate('/guardian', { state: { preloadReport: r } })}
+     >
+       <Sparkles size={15}/> Open in AI Guardian →
+     </button>
+   </div>
+   <form onSubmit={e=>{e.preventDefault();task.run(async()=>setAnswer(await api('/assistant',{report:r,question,ai_consent:consent})));}}>
+     <label>Question<input value={question} onChange={e=>setQuestion(e.target.value)} minLength={3} maxLength={1000} required/></label>
+     <label className="check"><input type="checkbox" checked={consent} onChange={e=>setConsent(e.target.checked)}/>Use configured AI provider; share redacted report excerpts and question.</label>
+     <button disabled={task.busy}>{task.busy?<Busy/>:'Explain'}</button>
+   </form>
+   {answer&&<div className="answer"><span className="pill">{answer.mode}</span><p>{answer.answer}</p><small>{answer.uncertainty}</small></div>}
+ </section>
  {incident&&<section className="panel"><h2>Incident summary</h2><textarea aria-label="Incident summary" rows={9} value={incident.summary} onChange={e=>setIncident({...incident,summary:e.target.value})}/><p>{incident.notice}</p><SourceLink url={incident.reporting_url}>National Cyber Crime Reporting Portal</SourceLink></section>}
  <details className="panel"><summary>Methodology and limitations</summary><List items={r.limitations}/><List items={r.verified_facts}/></details></>;
 }

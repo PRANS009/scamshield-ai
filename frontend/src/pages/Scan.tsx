@@ -20,6 +20,20 @@ export default function Scan({kind,onReport}:{kind:Kind;onReport:(r:Report)=>voi
  <div className="form-grid"><label>Company name <small>Optional · used for public search</small><input maxLength={120} value={company} onChange={e=>setCompany(e.target.value)} placeholder="e.g. company on the offer"/></label><label>Known official domain <small>Your reference, not automatically verified</small><input maxLength={253} value={official} onChange={e=>setOfficial(e.target.value)} placeholder="company.com"/></label></div>
  <label>Recruiter email <small>Optional · compared locally</small><input type="email" value={email} maxLength={254} onChange={e=>setEmail(e.target.value)} placeholder="recruiter@company.com"/></label>
  <div className="consent"><label><input type="checkbox" checked={research} onChange={e=>setResearch(e.target.checked)}/><span>Research with SerpApi<small>Send company/domain search terms to SerpApi and its search provider. Full messages and files are not sent.</small></span></label><label><input type="checkbox" checked={ai} onChange={e=>setAi(e.target.checked)}/><span>Add an AI explanation<small>Send redacted report indicators and search excerpts to the configured model provider. Raw documents are excluded.</small></span></label></div>
- <ErrorBox error={task.error}/><button className="primary wide" disabled={task.busy}>{task.busy?<Busy text="Investigating · up to 95 seconds"/>:<>Investigate <ArrowRight size={17}/></>}</button></form>
+ <ErrorBox error={task.error}/>
+ <div className="button-group-row">
+   <button className="primary wide" disabled={task.busy}>{task.busy?<Busy text="Investigating · up to 95 seconds"/>:<>Investigate <ArrowRight size={17}/></>}</button>
+   {content.trim() && (
+     <button
+       type="button"
+       className="guardian-btn"
+       disabled={task.busy}
+       onClick={() => navigate('/guardian', { state: { initialQuery: content } })}
+     >
+       Investigate with AI Guardian →
+     </button>
+   )}
+ </div>
+</form>
  <aside><div className="panel guidance"><ScanLine size={30}/><h3>A signal is a starting point.</h3><p>Our checks surface indicators. They cannot certify a person, website or opportunity as safe.</p><ol><li>Inspect the content</li><li>Research public evidence</li><li>Compare claims and sources</li><li>Choose your next step</li></ol></div><div className="panel subtle"><h3>You stay in control</h3><p>No suspicious destination is opened automatically. Reports are saved only when you choose Save.</p><p className="muted">Do not paste passwords, OTPs or financial account details.</p></div></aside></div></>;
 }

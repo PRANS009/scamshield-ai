@@ -23,6 +23,9 @@ from app.services.llm import explain
 from app.services.career import match,roadmap,market
 from app.services.files import read_upload,extract_document,decode_qr,make_pdf
 from app.security.validation import redact,normalize_url,redact_payload
+from app.agents.guardian import ChatRequest, ChatResponse, process_chat, guardian_store
+from app.agents.tools import get_tool_definitions
+
 
 @asynccontextmanager
 async def lifespan(app):
@@ -80,8 +83,37 @@ def owner(x_workspace_token:str=Header(default='')):
 
 @app.api_route('/api/v1/health',methods=['GET','HEAD'])
 def health():
-    return {'status':'ok','version':'1.0.0','serpapi_configured':bool(config.SERPAPI_KEY),'llm_configured':bool(config.LLM_KEY and config.LLM_MODEL),
-        'mode':'live integrations when configured; local heuristics otherwise'}
+    return {'status':'ok','version':'2.0.0','serpapi_configured':bool(config.SERPAPI_KEY),'llm_configured':bool(config.LLM_KEY and config.LLM_MODEL),
+        'mode':'live integrations when configured; local heuristics otherwise',
+        'features':['conversational_guardian','alexa_simulator','tool_orchestration','explainable_reports']}
+
+@app.post('/api/v1/agent/chat',response_model=ChatResponse)
+async def agent_chat(body:ChatRequest):
+    return await process_chat(body)
+
+@app.get('/api/v1/agent/session/{session_id}')
+def get_session(session_id:str):
+    session = guardian_store.get(session_id)
+    if not session:
+        raise HTTPException(404, 'Session not found.')
+    return session
+
+@app.delete('/api/v1/agent/session/{session_id}')
+def delete_session(session_id:str):
+    deleted = guardian_store.delete(session_id)
+    if not deleted:
+        raise HTTPException(404, 'Session not found.')
+    return {'deleted':True,'session_id':session_id}
+
+@app.get('/api/v1/agent/capabilities')
+def capabilities():
+    return {
+        'version':'2.0.0',
+        'tools':get_tool_definitions(),
+        'serpapi_ready':bool(config.SERPAPI_KEY),
+        'llm_ready':bool(config.LLM_KEY and config.LLM_MODEL),
+        'supported_scenarios':['fake_internship_offer','suspicious_link','uncertain_job_offer']
+    }
 
 @app.post('/api/v1/agent/investigate',response_model=Report)
 async def agent(body:Investigation):
